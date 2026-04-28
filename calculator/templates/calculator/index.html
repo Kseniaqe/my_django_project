@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Калькулятор</title>
+    <style>
+        body { font-family: Arial; max-width: 500px; margin: 50px auto; }
+        input, select, button { padding: 10px; margin: 5px; font-size: 16px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background: #4CAF50; color: white; }
+        .error { color: red; }
+        .result { color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Калькулятор</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="number" name="num1" step="any" required placeholder="Число 1" value="{{ num1 }}">
+        <select name="operation">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">×</option>
+            <option value="/">÷</option>
+        </select>
+        <input type="number" name="num2" step="any" required placeholder="Число 2" value="{{ num2 }}">
+        <button type="submit">Вычислить</button>
+    </form>
+    
+    {% if error %}<p class="error">{{ error }}</p>{% endif %}
+    {% if result %}<p class="result">Результат: {{ result }}</p>{% endif %}
+    
+    <h2>История</h2>
+    <table>
+        <tr><th>Число 1</th><th>Операция</th><th>Число 2</th><th>Результат</th><th>Дата</th></tr>
+        {% for item in history %}
+        <tr>
+            <td>{{ item.num1 }}</td>
+            <td>{{ item.operation }}</td>
+            <td>{{ item.num2 }}</td>
+            <td>{{ item.result }}</td>
+            <td>{{ item.created_at|date:"d.m.Y H:i" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5">История пуста</td></tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
